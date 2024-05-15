@@ -112,6 +112,10 @@ def analyze_aging(data):
     return pivot_table
 
 
+def at1_os(data):
+    return data
+
+
 def analyze_synthetic_comparative_type(data_old, data_new):
     def summarize(data):
         return data.pivot_table(
@@ -325,6 +329,9 @@ def analyze_comparative_age(data_old, data_new):
 
 # Função para compilar todas as análises
 def analyze_all(data_current, data_previous):
+    at1_os_result = at1_os(
+        data_current
+    )  # Certifique-se de que at1_os é uma função definida
     summary_data = analyze_summary(data_current)
     aging_by_service = analyze_aging_by_service(data_current)
     aging_data = analyze_aging(data_current)
@@ -342,6 +349,7 @@ def analyze_all(data_current, data_previous):
     )
 
     return {
+        "AT1 - OSs em aberto": at1_os_result,
         "Análise por Tipo": summary_data,
         "Aging por Atendimento": aging_by_service,
         "Aging": aging_data,
@@ -411,6 +419,7 @@ def main():
     )
 
     analysis_options = {
+        "AT1 - OSs em aberto": at1_os,
         "Análise por Tipo": analyze_summary,
         "Aging por Atendimento": analyze_aging_by_service,
         "Aging": analyze_aging,
@@ -456,13 +465,21 @@ def main():
 
         # Adicionar botão de download para todas as análises
         all_analyses = analyze_all(data_current, data_previous)
-        excel_data = generate_excel(all_analyses)
-        st.download_button(
-            label="Download de Todas as Análises em Excel",
-            data=excel_data,
-            file_name="Todas_as_Análises.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
+
+        # Verificar a saída
+        print(type(all_analyses))  # Deve ser <class 'dict'>
+
+        # Verifique se all_analyses é um dicionário
+        if isinstance(all_analyses, dict):
+            excel_data = generate_excel(all_analyses)
+            st.download_button(
+                label="Download de Todas as Análises em Excel",
+                data=excel_data,
+                file_name="Todas_as_Análises.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        else:
+            st.error("Erro: a saída das análises não é um dicionário.")
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ authors = ["Bruno Pascoal <bpascoal.santos@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.9,<3.9.7 || >3.9.7"
 streamlit = "^1.33.0"
 plotly = "^5.20.0"
 xlsxwriter = "^3.2.0"
