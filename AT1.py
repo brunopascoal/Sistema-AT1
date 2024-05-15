@@ -53,9 +53,12 @@ def analyze_summary(data):
     ).rename(columns={"Numero": "Quantidade de OS"})
 
     # Adicionar coluna de variação
-    total_value = pivot_table.loc["Total", "Valor Total"]
-    pivot_table["Variação (%)"] = (pivot_table["Valor Total"] / total_value) * 100
-    pivot_table["Variação (%)"] = pivot_table["Variação (%)"].round(2)
+    total_value = pivot_table.xs("Total", level=0)[
+        "Valor Total"
+    ]  # Ajuste conforme necessário para sua estrutura de índice
+    pivot_table["Variação (%)"] = pivot_table["Valor Total"].apply(
+        lambda x: (x / total_value) * 100 if pd.notna(x) else None
+    )
 
     return pivot_table
 
